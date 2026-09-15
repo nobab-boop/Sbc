@@ -1,0 +1,6 @@
+{
+  "name": "Bubu & Dudu Birthday Surprise",
+  "description": "A romantic pastel birthday surprise web app inspired by Bubu & Dudu with interactive steps, playful buttons, love letter scrapbook, confetti, and virtual hug.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

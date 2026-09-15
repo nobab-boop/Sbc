@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Quicksand', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    color: #6b4f4f;
+    background-color: #FFF5F7;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Fredoka', 'Sniglet', cursive, sans-serif;
+    color: #d6336c;
+    letter-spacing: 0.02em;
+    text-shadow: 2px 2px 0px rgba(255, 182, 193, 0.6);
+  }
+}
+
+.heading-kawaii {
+  font-family: 'Fredoka', cursive, sans-serif;
+  color: #d6336c;
+  letter-spacing: 0.02em;
+  text-shadow: 2px 2px 0px rgba(255, 182, 193, 0.6);
+}
+
+.heading-kawaii-plum {
+  font-family: 'Fredoka', cursive, sans-serif;
+  color: #744253;
+  letter-spacing: 0.02em;
+  text-shadow: 2px 2px 0px rgba(255, 209, 220, 0.7);
+}
+
+.body-kawaii {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  color: #6b4f4f;
+  line-height: 1.6;
+}
+
+/* Scrapbook Lined Letter Note with Gaegu */
+.letter-diary-container {
+  font-family: 'Gaegu', cursive, sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: #4a3b32;
+  background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(255, 182, 193, 0.25) 31px, rgba(255, 182, 193, 0.25) 32px);
+}
+
+/* Soft Kawaii Card with Pastel Dashed Border and Peach/Pink Glow */
+.card-kawaii {
+  border: 2.5px dashed rgba(255, 182, 193, 0.9);
+  box-shadow: 0 10px 25px rgba(255, 154, 162, 0.25);
+  border-radius: 28px;
+}
+
+/* Kawaii Pill Buttons */
+.btn-kawaii {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 50px;
+}
+
+.font-caveat {
+  font-family: 'Caveat', cursive, sans-serif;
+}
+
+.font-sniglet {
+  font-family: 'Sniglet', cursive, sans-serif;
+}
+
+.font-quicksand {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.font-fredoka {
+  font-family: 'Fredoka', cursive, sans-serif;
+}
+
+.font-gaegu {
+  font-family: 'Gaegu', cursive, sans-serif;
+}
+
+.font-itim {
+  font-family: 'Itim', cursive, sans-serif;
+}
+
+@keyframes shakeInput {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.animate-shake {
+  animation: shakeInput 0.4s ease-in-out;
+}
+
+/* Floating background hearts animation (GPU-accelerated) */
+@keyframes floatUp {
+  0% {
+    transform: translate3d(0, 105vh, 0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.6;
+  }
+  85% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate3d(0, -15vh, 0) scale(1.1) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+.animate-float-heart {
+  animation: floatUp 8s linear infinite;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* Wiggle for cute emphasis */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.animate-wiggle {
+  animation: wiggle 1.2s ease-in-out infinite;
+}
+
+/* Gentle squishy bounce */
+@keyframes cuteBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+.animate-cute-bounce {
+  animation: cuteBounce 2s ease-in-out infinite;
+}
+
+/* Stamp slow spin */
+@keyframes slowSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: slowSpin 14s linear infinite;
+}
+
+/* Polaroid tape strip effect (no expensive backdrop-filter to keep 60fps) */
+.washi-tape {
+  background-color: rgba(254, 215, 226, 0.9);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  clip-path: polygon(0 0, 100% 0, 96% 100%, 4% 100%);
+}
+
+.washi-tape-slant {
+  background-color: rgba(255, 230, 213, 0.9);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  clip-path: polygon(4% 0%, 96% 0%, 100% 100%, 0% 100%);
+}

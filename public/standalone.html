@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Cutie Pie! 🎂💖</title>
+  <meta name="description" content="A romantic birthday surprise web app inspired by Bubu & Dudu" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body {
+      font-family: 'Fredoka', 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #FFF5F7 0%, #FFE9ED 50%, #FFF0F5 100%);
+      color: #5A3A42;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+      padding: 16px;
+    }
+    .floating-hearts-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .heart-particle {
+      position: absolute;
+      bottom: -40px;
+      animation: floatUp linear infinite;
+      opacity: 0.55;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.6; }
+      85% { opacity: 0.6; }
+      100% { transform: translateY(-115vh) scale(1.1) rotate(30deg); opacity: 0; }
+    }
+    .app-card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 480px;
+      background: rgba(255, 255, 255, 0.94);
+      border-radius: 32px;
+      box-shadow: 0 16px 40px -6px rgba(251, 113, 133, 0.2), 0 0 0 4px #FFF0F3;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .screen {
+      display: none;
+      animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .screen.active {
+      display: block;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.92) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    h1, h2 {
+      font-weight: 700;
+      color: #E11D48;
+      margin-bottom: 14px;
+      line-height: 1.25;
+    }
+    .lead-text {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #9F1239;
+      margin-bottom: 18px;
+    }
+    .gif-container {
+      width: 100%;
+      max-width: 220px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .gif-img {
+      width: 100%;
+      max-width: 220px;
+      height: auto;
+      border-radius: 16px;
+      margin: 0 auto;
+      display: block;
+      filter: drop-shadow(0 8px 16px rgba(244, 63, 94, 0.15));
+    }
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      position: relative;
+      min-height: 60px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #FB7185, #E11D48);
+      color: white;
+      border: 2px solid white;
+      border-radius: 9999px;
+      padding: 14px 34px;
+      font-size: 1.15rem;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(225, 29, 72, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 12px 22px rgba(225, 29, 72, 0.45);
+    }
+    .btn-primary:active {
+      transform: scale(0.96);
+    }
+    .btn-secondary {
+      background: #E2E8F0;
+      color: #475569;
+      border: none;
+      border-radius: 9999px;
+      padding: 14px 30px;
+      font-size: 1.1rem;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      position: relative;
+    }
+    .floating-stamp-btn {
+      position: absolute;
+      right: -10px;
+      bottom: -15px;
+      background: #FFE4E6;
+      border: 3px dashed #FB7185;
+      color: #E11D48;
+      border-radius: 50%;
+      width: 78px;
+      height: 78px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(244, 63, 94, 0.25);
+      transition: all 0.2s ease;
+    }
+    .floating-stamp-btn:hover {
+      transform: scale(1.1) rotate(8deg);
+      background: #FECDD3;
+    }
+    .scrapbook-container {
+      background: #FFFDF9;
+      border: 2px dashed #FBCFE8;
+      border-radius: 20px;
+      padding: 22px 18px;
+      position: relative;
+      box-shadow: inset 0 0 20px rgba(254, 215, 226, 0.3), 0 8px 18px rgba(0,0,0,0.04);
+      text-align: left;
+    }
+    .washi-tape-top {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 24px;
+      background: rgba(253, 164, 175, 0.7);
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+    }
+    .letter-title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #BE185D;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+    .letter-body {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: #4A353B;
+    }
+    .letter-signature {
+      margin-top: 14px;
+      text-align: right;
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: #BE123C;
+      font-weight: 700;
+    }
+    .stickers-badge {
+      display: flex;
+      justify-content: space-around;
+      font-size: 1.5rem;
+      margin: 12px 0 6px;
+    }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      max-width: 280px;
+      margin: 14px auto;
+      border: 4px solid #FFE4E6;
+      border-radius: 20px;
+      padding: 8px;
+      background: #FFF1F2;
+    }
+    .collage-img {
+      width: 100%;
+      height: 95px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .date-badge {
+      display: inline-block;
+      background: #FFE4E6;
+      color: #9F1239;
+      padding: 6px 18px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin: 12px 0 16px;
+      border: 1px solid #FECDD3;
+    }
+    .music-btn {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      background: white;
+      border: 2px solid #FECDD3;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2);
+      z-index: 100;
+      transition: transform 0.2s ease;
+    }
+    .music-btn:hover {
+      transform: scale(1.1);
+    }
+    .music-spinning {
+      animation: spin 3s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .hug-counter-badge {
+      background: #FFE4E6;
+      border-radius: 9999px;
+      padding: 8px 18px;
+      color: #E11D48;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 14px;
+    }
+    .celebration-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 241, 242, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .celebration-overlay.active {
+      display: flex;
+      animation: popIn 0.5s ease forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Heart Background -->
+  <div class="floating-hearts-container" id="heartsContainer"></div>
+
+  <!-- Music Toggle Button -->
+  <button class="music-btn" id="musicBtn" title="Play / Pause Romantic BGM">🎵</button>
+  <audio id="bgmAudio" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=sweet-love-112199.mp3"></audio>
+
+  <!-- Main Card -->
+  <div class="app-card">
+
+    <!-- Screen 1: Initial Question -->
+    <div class="screen active" id="screen1">
+      <div class="lead-text">I made something special for u, do u wanna see it? 💖</div>
+      <div class="gif-container">
+        <svg viewBox="0 0 300 240" class="gif-img" style="width: 100%; max-width: 220px; height: auto; border-radius: 16px; margin: 0 auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="blushPink1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FF6584" stop-opacity="0.6" />
+              <stop offset="100%" stop-color="#FF6584" stop-opacity="0" />
+            </radialGradient>
+            <radialGradient id="blushPeach1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FA8F54" stop-opacity="0.6" />
+              <stop offset="100%" stop-color="#FA8F54" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <g>
+            <text x="145" y="42" font-size="28" fill="#E11D48" font-weight="bold">💖</text>
+            <text x="135" y="70" font-size="20" fill="#FB7185" font-weight="bold">?</text>
+          </g>
+          <!-- DUDU (BROWN BEAR) -->
+          <g transform="translate(45, 55)">
+            <ellipse cx="60" cy="165" rx="45" ry="12" fill="#E2B4BD" opacity="0.4" />
+            <circle cx="28" cy="35" r="18" fill="#B27854" />
+            <circle cx="28" cy="35" r="11" fill="#FFCFD2" />
+            <circle cx="92" cy="35" r="18" fill="#B27854" />
+            <circle cx="92" cy="35" r="11" fill="#FFCFD2" />
+            <ellipse cx="60" cy="125" rx="38" ry="36" fill="#B27854" />
+            <ellipse cx="60" cy="130" rx="26" ry="24" fill="#FEEFE5" />
+            <ellipse cx="38" cy="155" rx="14" ry="10" fill="#96603F" />
+            <ellipse cx="82" cy="155" rx="14" ry="10" fill="#96603F" />
+            <ellipse cx="60" cy="65" rx="46" ry="40" fill="#B27854" />
+            <ellipse cx="60" cy="74" rx="22" ry="17" fill="#FEEFE5" />
+            <ellipse cx="60" cy="68" rx="6" ry="4" fill="#3D281D" />
+            <path d="M54 74 Q60 81 66 74" fill="none" stroke="#3D281D" stroke-width="2.5" stroke-linecap="round" />
+            <circle cx="32" cy="74" r="10" fill="url(#blushPeach1)" />
+            <circle cx="88" cy="74" r="10" fill="url(#blushPeach1)" />
+            <ellipse cx="42" cy="60" rx="5" ry="6" fill="#3D281D" />
+            <circle cx="44" cy="58" r="2" fill="#FFFFFF" />
+            <ellipse cx="78" cy="60" rx="5" ry="6" fill="#3D281D" />
+            <circle cx="80" cy="58" r="2" fill="#FFFFFF" />
+            <path d="M26 115 Q10 95 18 80 Q28 85 32 105 Z" fill="#B27854" />
+            <path d="M85 115 Q105 125 118 120" fill="none" stroke="#B27854" stroke-width="14" stroke-linecap="round" />
+          </g>
+          <!-- BUBU (PANDA) -->
+          <g transform="translate(145, 55)">
+            <ellipse cx="60" cy="165" rx="45" ry="12" fill="#E2B4BD" opacity="0.4" />
+            <circle cx="28" cy="35" r="18" fill="#2E2729" />
+            <circle cx="92" cy="35" r="18" fill="#2E2729" />
+            <ellipse cx="60" cy="125" rx="38" ry="36" fill="#FFFFFF" stroke="#EAE0E2" stroke-width="2" />
+            <path d="M24 115 Q60 135 96 115 Q85 155 35 155 Z" fill="#2E2729" />
+            <ellipse cx="38" cy="155" rx="14" ry="10" fill="#2E2729" />
+            <ellipse cx="82" cy="155" rx="14" ry="10" fill="#2E2729" />
+            <ellipse cx="60" cy="65" rx="46" ry="40" fill="#FFFFFF" stroke="#EFE4E6" stroke-width="1.5" />
+            <ellipse cx="40" cy="62" rx="13" ry="15" fill="#2E2729" transform="rotate(-10 40 62)" />
+            <ellipse cx="80" cy="62" rx="13" ry="15" fill="#2E2729" transform="rotate(10 80 62)" />
+            <circle cx="40" cy="62" r="5" fill="#FFFFFF" />
+            <circle cx="43" cy="59" r="2" fill="#FFFFFF" />
+            <circle cx="80" cy="62" r="5" fill="#FFFFFF" />
+            <circle cx="83" cy="59" r="2" fill="#FFFFFF" />
+            <ellipse cx="60" cy="70" rx="5" ry="4" fill="#2E2729" />
+            <path d="M53 76 Q57 80 60 76 Q63 80 67 76" fill="none" stroke="#2E2729" stroke-width="2.5" stroke-linecap="round" />
+            <circle cx="28" cy="76" r="10" fill="url(#blushPink1)" />
+            <circle cx="92" cy="76" r="10" fill="url(#blushPink1)" />
+            <path d="M30 115 Q15 125 0 120" fill="none" stroke="#2E2729" stroke-width="14" stroke-linecap="round" />
+            <path d="M85 110 Q105 95 98 82" fill="none" stroke="#2E2729" stroke-width="14" stroke-linecap="round" />
+            <path d="M96 74 Q106 60 116 74 Q106 88 96 74" fill="#FF4D6D" />
+            <circle cx="106" cy="74" r="5" fill="#FFD166" />
+          </g>
+        </svg>
+      </div>
+      <div class="btn-group" id="btnGroup1">
+        <button class="btn-primary" id="btnYes1">YES! 🌸</button>
+        <button class="btn-secondary" id="btnNo1">No 🙈</button>
+      </div>
+    </div>
+
+    <!-- Screen 1.5: Oops / Mad Screen -->
+    <div class="screen" id="screenOops">
+      <h2 style="color: #E11D48; font-size: 1.5rem;">Why did u click no!? 🥺</h2>
+      <div class="gif-container">
+        <svg viewBox="0 0 240 240" class="gif-img" style="width: 100%; max-width: 220px; height: auto; border-radius: 16px; margin: 0 auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="poutRed1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#EF4444" stop-opacity="0.75" />
+              <stop offset="100%" stop-color="#EF4444" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <ellipse cx="120" cy="215" rx="55" ry="14" fill="#F87171" opacity="0.3" />
+          <g transform="translate(165, 30)">
+            <path d="M0 8 L16 8 M8 0 L8 16" stroke="#EF4444" stroke-width="3.5" stroke-linecap="round" />
+            <path d="M14 2 L22 10 M22 2 L14 10" stroke="#EF4444" stroke-width="3" stroke-linecap="round" />
+          </g>
+          <g transform="translate(30, 20)">
+            <circle cx="40" cy="40" r="22" fill="#A06742" />
+            <circle cx="40" cy="40" r="13" fill="#FCA5A5" />
+            <circle cx="140" cy="40" r="22" fill="#A06742" />
+            <circle cx="140" cy="40" r="13" fill="#FCA5A5" />
+            <ellipse cx="90" cy="140" rx="50" ry="46" fill="#B27854" />
+            <ellipse cx="90" cy="145" rx="34" ry="32" fill="#FEEFE5" />
+            <path d="M45 135 Q90 160 135 135" fill="none" stroke="#96603F" stroke-width="18" stroke-linecap="round" />
+            <ellipse cx="60" cy="182" rx="18" ry="12" fill="#845030" />
+            <ellipse cx="120" cy="182" rx="18" ry="12" fill="#845030" />
+            <ellipse cx="90" cy="75" rx="58" ry="50" fill="#B27854" />
+            <ellipse cx="90" cy="88" rx="28" ry="20" fill="#FEEFE5" />
+            <ellipse cx="90" cy="80" rx="7" ry="5" fill="#3D281D" />
+            <path d="M80 97 Q90 89 100 97" fill="none" stroke="#3D281D" stroke-width="3.5" stroke-linecap="round" />
+            <path d="M60 52 L78 60" stroke="#3D281D" stroke-width="4" stroke-linecap="round" />
+            <path d="M120 52 L102 60" stroke="#3D281D" stroke-width="4" stroke-linecap="round" />
+            <ellipse cx="68" cy="68" rx="7" ry="8" fill="#3D281D" />
+            <circle cx="70" cy="66" r="3" fill="#FFFFFF" />
+            <circle cx="66" cy="72" r="1.5" fill="#60A5FA" opacity="0.8" />
+            <ellipse cx="112" cy="68" rx="7" ry="8" fill="#3D281D" />
+            <circle cx="114" cy="66" r="3" fill="#FFFFFF" />
+            <circle cx="110" cy="72" r="1.5" fill="#60A5FA" opacity="0.8" />
+            <circle cx="50" cy="88" r="14" fill="url(#poutRed1)" />
+            <circle cx="130" cy="88" r="14" fill="url(#poutRed1)" />
+          </g>
+        </svg>
+      </div>
+      <p style="color: #881337; font-weight: 600; margin-bottom: 20px;">Bear is pouting now! You have to say yes~ 😤</p>
+      <button class="btn-primary" id="btnTryAgain">TRY AGAIN 💖</button>
+    </div>
+
+    <!-- Screen 2: Birthday Celebration -->
+    <div class="screen" id="screen2">
+      <h1 style="font-size: 1.85rem;">HAPPY BIRTHDAY 🎉🎂</h1>
+      <div class="gif-container">
+        <svg viewBox="0 0 320 260" class="gif-img" style="width: 100%; max-width: 220px; height: auto; border-radius: 16px; margin: 0 auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="40" r="5" fill="#F43F5E" />
+          <circle cx="70" cy="20" r="4" fill="#FBBF24" />
+          <circle cx="250" cy="30" r="6" fill="#38BDF8" />
+          <circle cx="290" cy="55" r="5" fill="#A855F7" />
+          <path d="M40 70 Q45 80 50 70 T60 70" fill="none" stroke="#EC4899" stroke-width="2" />
+          <path d="M260 60 Q265 70 270 60 T280 60" fill="none" stroke="#EAB308" stroke-width="2" />
+          <g transform="translate(40, 45)">
+            <circle cx="35" cy="35" r="16" fill="#B27854" />
+            <circle cx="85" cy="35" r="16" fill="#B27854" />
+            <ellipse cx="60" cy="60" rx="42" ry="36" fill="#B27854" />
+            <ellipse cx="60" cy="68" rx="20" ry="15" fill="#FEEFE5" />
+            <ellipse cx="60" cy="64" rx="5" ry="4" fill="#3D281D" />
+            <path d="M55 70 Q60 75 65 70" fill="none" stroke="#3D281D" stroke-width="2" stroke-linecap="round" />
+            <path d="M44 58 Q50 52 56 58" fill="none" stroke="#3D281D" stroke-width="3" stroke-linecap="round" />
+            <path d="M64 58 Q70 52 76 58" fill="none" stroke="#3D281D" stroke-width="3" stroke-linecap="round" />
+            <circle cx="38" cy="68" r="9" fill="#FF85A1" opacity="0.6" />
+            <circle cx="82" cy="68" r="9" fill="#FF85A1" opacity="0.6" />
+            <polygon points="60,8 42,42 78,42" fill="#F43F5E" />
+            <polygon points="60,8 50,42 70,42" fill="#FDE047" opacity="0.8" />
+            <circle cx="60" cy="6" r="5" fill="#FDE047" />
+            <ellipse cx="60" cy="115" rx="35" ry="30" fill="#B27854" />
+            <ellipse cx="35" cy="110" rx="10" ry="14" fill="#96603F" transform="rotate(-15 35 110)" />
+          </g>
+          <g transform="translate(160, 45)">
+            <circle cx="35" cy="35" r="16" fill="#2E2729" />
+            <circle cx="85" cy="35" r="16" fill="#2E2729" />
+            <ellipse cx="60" cy="60" rx="42" ry="36" fill="#FFFFFF" stroke="#F3E8E9" stroke-width="1.5" />
+            <ellipse cx="45" cy="58" rx="12" ry="14" fill="#2E2729" transform="rotate(-8 45 58)" />
+            <ellipse cx="75" cy="58" rx="12" ry="14" fill="#2E2729" transform="rotate(8 75 58)" />
+            <path d="M40 58 Q45 52 50 58" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+            <circle cx="75" cy="57" r="4" fill="#FFFFFF" />
+            <ellipse cx="60" cy="66" rx="4" ry="3" fill="#2E2729" />
+            <path d="M54 72 Q60 76 66 72" fill="none" stroke="#2E2729" stroke-width="2" stroke-linecap="round" />
+            <circle cx="38" cy="68" r="9" fill="#FF85A1" opacity="0.6" />
+            <circle cx="82" cy="68" r="9" fill="#FF85A1" opacity="0.6" />
+            <polygon points="60,8 42,42 78,42" fill="#38BDF8" />
+            <polygon points="60,8 52,42 68,42" fill="#F472B6" opacity="0.8" />
+            <circle cx="60" cy="6" r="5" fill="#F472B6" />
+            <ellipse cx="60" cy="115" rx="35" ry="30" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" />
+            <ellipse cx="85" cy="110" rx="10" ry="14" fill="#2E2729" transform="rotate(15 85 110)" />
+          </g>
+          <g transform="translate(90, 130)">
+            <ellipse cx="70" cy="98" rx="72" ry="16" fill="#FEE2E2" stroke="#FDA4AF" stroke-width="2" />
+            <path d="M22 65 C22 55, 118 55, 118 65 L118 90 C118 100, 22 100, 22 90 Z" fill="#FFF1F2" />
+            <path d="M22 65 C35 75, 45 60, 60 75 C75 60, 85 75, 100 60 C110 75, 118 65, 118 65 C118 55, 22 55, 22 65 Z" fill="#FB7185" />
+            <circle cx="45" cy="56" r="7" fill="#E11D48" />
+            <circle cx="70" cy="53" r="8" fill="#E11D48" />
+            <circle cx="95" cy="56" r="7" fill="#E11D48" />
+            <rect x="67" y="24" width="6" height="28" rx="3" fill="#FDE047" stroke="#F59E0B" stroke-width="1" />
+            <ellipse cx="70" cy="14" rx="5" ry="9" fill="#F97316" />
+            <ellipse cx="70" cy="15" rx="2.5" ry="5" fill="#FEF08A" />
+          </g>
+        </svg>
+      </div>
+      <div style="font-size: 1.4rem; font-weight: 700; color: #BE123C; margin-bottom: 30px;">
+        I am ur gift 🎁
+      </div>
+      <button class="floating-stamp-btn" id="btnNext2">
+        <span>Click</span>
+        <span>Me 🌸</span>
+      </button>
+    </div>
+
+    <!-- Screen 3: Emotional / Love Letter -->
+    <div class="screen" id="screen3">
+      <div class="gif-container">
+        <svg viewBox="0 0 200 180" class="gif-img" style="width: 100%; max-width: 200px; height: auto; border-radius: 16px; margin: 0 auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="blushLetter1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FF6584" stop-opacity="0.6" />
+              <stop offset="100%" stop-color="#FF6584" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <g transform="translate(40, 10)">
+            <circle cx="35" cy="35" r="16" fill="#2E2729" />
+            <circle cx="85" cy="35" r="16" fill="#2E2729" />
+            <ellipse cx="60" cy="58" rx="42" ry="36" fill="#FFFFFF" stroke="#F3E8E9" stroke-width="1.5" />
+            <ellipse cx="44" cy="55" rx="11" ry="13" fill="#2E2729" transform="rotate(-10 44 55)" />
+            <ellipse cx="76" cy="55" rx="11" ry="13" fill="#2E2729" transform="rotate(10 76 55)" />
+            <circle cx="45" cy="54" r="3.5" fill="#FFFFFF" />
+            <circle cx="77" cy="54" r="3.5" fill="#FFFFFF" />
+            <circle cx="34" cy="66" r="8" fill="url(#blushLetter1)" />
+            <circle cx="86" cy="66" r="8" fill="url(#blushLetter1)" />
+            <ellipse cx="60" cy="64" rx="4" ry="3" fill="#2E2729" />
+            <path d="M56 68 Q60 72 64 68" fill="none" stroke="#2E2729" stroke-width="2" stroke-linecap="round" />
+            <ellipse cx="60" cy="115" rx="36" ry="30" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" />
+            <ellipse cx="28" cy="110" rx="9" ry="11" fill="#2E2729" />
+            <ellipse cx="92" cy="110" rx="9" ry="11" fill="#2E2729" />
+            <g transform="translate(18, 90)">
+              <rect x="0" y="0" width="84" height="54" rx="6" fill="#FFE4E6" stroke="#FB7185" stroke-width="2" />
+              <polygon points="0,0 42,28 84,0" fill="#FECDD3" stroke="#FB7185" stroke-width="2" />
+              <circle cx="42" cy="27" r="9" fill="#E11D48" />
+              <text x="36" y="32" font-size="11" fill="#FFFFFF">❤️</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="scrapbook-container">
+        <div class="washi-tape-top"></div>
+        <div class="stickers-badge">
+          <span>📸</span><span>🍭</span><span>💖</span><span>🍒</span>
+        </div>
+        <div class="letter-title">MY WISH FOR U</div>
+        <div class="letter-body">
+          <p style="margin-bottom: 8px; font-weight: 700;">Dearest Love,</p>
+          <p style="margin-bottom: 10px;">Happy Birthday to the sweetest, most wonderful human in the entire universe! Every single day with you feels like sunshine after rain. Thank you for filling my life with your gentle giggles, endless warmth, and all our silly little memories.</p>
+          <p style="margin-bottom: 10px;">My deepest wish for you today is a year overflowing with peace, immense joy, and dreams coming true. No matter what tomorrow holds, know that I'm always right here cheering for you, admiring you, and loving you more than words could ever say.</p>
+          <p style="margin-bottom: 4px;">Forever and always yours,</p>
+        </div>
+        <div class="letter-signature">Ur Panda 🐼❤️</div>
+      </div>
+      <div style="margin-top: 24px;">
+        <button class="btn-primary" id="btnNext3">Next ❤️</button>
+      </div>
+    </div>
+
+    <!-- Screen 4: Virtual Hug / I Miss You -->
+    <div class="screen" id="screen4">
+      <h1 style="font-size: 1.7rem;">Virtual hug for ya! 🤗</h1>
+      <div class="gif-container">
+        <svg viewBox="0 0 260 240" class="gif-img" style="width: 100%; max-width: 220px; height: auto; border-radius: 16px; margin: 0 auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <text x="115" y="32" font-size="24" fill="#E11D48">💖</text>
+            <text x="60" y="55" font-size="18" fill="#FB7185">💕</text>
+            <text x="175" y="55" font-size="18" fill="#FB7185">💕</text>
+          </g>
+          <ellipse cx="130" cy="210" rx="75" ry="16" fill="#FBCFE8" opacity="0.5" />
+          <g transform="translate(30, 40)">
+            <circle cx="50" cy="45" r="18" fill="#B27854" />
+            <circle cx="50" cy="45" r="10" fill="#FFD1DC" />
+            <circle cx="150" cy="45" r="18" fill="#2E2729" />
+            <ellipse cx="75" cy="130" rx="42" ry="38" fill="#B27854" />
+            <ellipse cx="125" cy="130" rx="42" ry="38" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2" />
+            <ellipse cx="78" cy="78" rx="44" ry="38" fill="#B27854" />
+            <ellipse cx="122" cy="78" rx="44" ry="38" fill="#FFFFFF" stroke="#F3E8E9" stroke-width="1.5" />
+            <ellipse cx="115" cy="74" rx="10" ry="13" fill="#2E2729" transform="rotate(-15 115 74)" />
+            <ellipse cx="145" cy="74" rx="10" ry="13" fill="#2E2729" transform="rotate(15 145 74)" />
+            <path d="M58 74 Q66 82 74 74" fill="none" stroke="#3D281D" stroke-width="3" stroke-linecap="round" />
+            <path d="M110 74 Q116 80 122 74" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M140 74 Q146 80 152 74" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+            <ellipse cx="78" cy="86" rx="14" ry="10" fill="#FEEFE5" />
+            <ellipse cx="78" cy="83" rx="4" ry="3" fill="#3D281D" />
+            <path d="M74 88 Q78 92 82 88" fill="none" stroke="#3D281D" stroke-width="2" stroke-linecap="round" />
+            <ellipse cx="126" cy="85" rx="3.5" ry="2.5" fill="#2E2729" />
+            <path d="M122 90 Q126 94 130 90" fill="none" stroke="#2E2729" stroke-width="2" stroke-linecap="round" />
+            <path d="M60 120 C85 145, 140 145, 155 125" fill="none" stroke="#96603F" stroke-width="16" stroke-linecap="round" />
+            <path d="M140 120 C115 145, 60 145, 45 125" fill="none" stroke="#2E2729" stroke-width="16" stroke-linecap="round" />
+            <circle cx="50" cy="86" r="10" fill="#FF4D6D" opacity="0.6" />
+            <circle cx="150" cy="86" r="10" fill="#FF4D6D" opacity="0.6" />
+            <circle cx="98" cy="92" r="8" fill="#FF6584" opacity="0.5" />
+          </g>
+        </svg>
+      </div>
+      <div style="font-size: 1.6rem; font-weight: 800; color: #BE123C; margin-bottom: 12px;">
+        I MISS YOU ❤️
+      </div>
+      <div>
+        <button class="btn-primary" id="btnSendHug" style="padding: 10px 24px; font-size: 1rem;">
+          Tap for Extra Hugs 🫂
+        </button>
+      </div>
+      <div class="hug-counter-badge" id="hugBadge">Sent 0 warm hugs 💕</div>
+      <div style="margin-top: 22px;">
+        <button class="btn-secondary" id="btnNext4" style="background: #FFE4E6; color: #9F1239;">Next ✨</button>
+      </div>
+    </div>
+
+    <!-- Screen 5: Final Proposal -->
+    <div class="screen" id="screen5">
+      <h1 style="font-size: 1.8rem;">Will you be mine? 💖</h1>
+      <div class="photo-grid">
+        <svg viewBox="0 0 160 160" class="collage-img" style="width: 100%; height: 120px; border-radius: 12px; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <rect width="160" height="160" fill="#FFE4E6" />
+          <circle cx="80" cy="65" r="36" fill="#FDA4AF" opacity="0.6" />
+          <text x="80" y="74" font-size="34" text-anchor="middle">🌸</text>
+          <rect x="20" y="115" width="120" height="26" rx="13" fill="#FFF1F2" />
+          <text x="80" y="132" font-size="12" font-weight="bold" fill="#BE123C" text-anchor="middle">First Date 💕</text>
+        </svg>
+        <svg viewBox="0 0 160 160" class="collage-img" style="width: 100%; height: 120px; border-radius: 12px; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <rect width="160" height="160" fill="#FEF3C7" />
+          <circle cx="80" cy="65" r="36" fill="#FDE68A" opacity="0.6" />
+          <text x="80" y="74" font-size="34" text-anchor="middle">🍰</text>
+          <rect x="20" y="115" width="120" height="26" rx="13" fill="#FFFBEB" />
+          <text x="80" y="132" font-size="12" font-weight="bold" fill="#B45309" text-anchor="middle">Sweet Treats 🧋</text>
+        </svg>
+        <svg viewBox="0 0 160 160" class="collage-img" style="width: 100%; height: 120px; border-radius: 12px; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <rect width="160" height="160" fill="#E0F2FE" />
+          <circle cx="80" cy="65" r="36" fill="#BAE6FD" opacity="0.6" />
+          <text x="80" y="74" font-size="34" text-anchor="middle">🌙</text>
+          <rect x="20" y="115" width="120" height="26" rx="13" fill="#F0F9FF" />
+          <text x="80" y="132" font-size="12" font-weight="bold" fill="#0369A1" text-anchor="middle">Late Night Talks ✨</text>
+        </svg>
+        <svg viewBox="0 0 160 160" class="collage-img" style="width: 100%; height: 120px; border-radius: 12px; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <rect width="160" height="160" fill="#FCE7F3" />
+          <circle cx="80" cy="65" r="36" fill="#FBCFE8" opacity="0.6" />
+          <text x="80" y="74" font-size="34" text-anchor="middle">💍</text>
+          <rect x="20" y="115" width="120" height="26" rx="13" fill="#FDF2F8" />
+          <text x="80" y="132" font-size="12" font-weight="bold" fill="#BE185D" text-anchor="middle">Endless Love 💖</text>
+        </svg>
+      </div>
+      <div class="date-badge">✨ Special Date: 28.02.2026 ✨</div>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+        <button class="btn-secondary" id="btnProposalYes1" style="font-size: 1.15rem; background: #FFE4E6; color: #E11D48; border: 2px solid #FECDD3;">YES</button>
+        <button class="btn-primary" id="btnProposalYes2" style="background: linear-gradient(135deg, #F43F5E, #BE123C); font-size: 1.2rem;">A million times YES! 💖</button>
+      </div>
+    </div>
+
+    <!-- Screen 5.5: Playful Sad Screen for regular YES -->
+    <div class="screen" id="screenSad">
+      <div style="font-size: 2.2rem; margin-bottom: 6px;">💔🥺</div>
+      <h2 style="color: #E11D48; font-size: 1.55rem; margin-bottom: 8px;">Just a regular YES? 🥺💔</h2>
+      <div class="gif-container">
+        <svg viewBox="0 0 260 220" class="gif-img" style="width: 100%; max-width: 220px; height: auto; border-radius: 16px; margin: 0 auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="tearStream1" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.85" />
+              <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.3" />
+            </linearGradient>
+          </defs>
+          <g transform="translate(112, 10)">
+            <text x="0" y="24" font-size="26">💔</text>
+          </g>
+          <g transform="translate(45, 30)">
+            <circle cx="35" cy="40" r="18" fill="#B27854" />
+            <circle cx="35" cy="40" r="10" fill="#FCA5A5" />
+            <circle cx="135" cy="40" r="18" fill="#B27854" />
+            <circle cx="135" cy="40" r="10" fill="#FCA5A5" />
+            <ellipse cx="85" cy="135" rx="46" ry="42" fill="#B27854" />
+            <ellipse cx="85" cy="140" rx="30" ry="28" fill="#FEEFE5" />
+            <ellipse cx="50" cy="95" rx="14" ry="18" fill="#96603F" transform="rotate(-25 50 95)" />
+            <ellipse cx="120" cy="95" rx="14" ry="18" fill="#96603F" transform="rotate(25 120 95)" />
+            <ellipse cx="85" cy="72" rx="52" ry="44" fill="#B27854" />
+            <ellipse cx="85" cy="82" rx="24" ry="17" fill="#FEEFE5" />
+            <ellipse cx="85" cy="76" rx="6" ry="4" fill="#3D281D" />
+            <path d="M75 92 Q85 84 95 92" fill="none" stroke="#3D281D" stroke-width="3" stroke-linecap="round" />
+            <path d="M55 50 Q65 44 72 52" fill="none" stroke="#3D281D" stroke-width="3.5" stroke-linecap="round" />
+            <path d="M115 50 Q105 44 98 52" fill="none" stroke="#3D281D" stroke-width="3.5" stroke-linecap="round" />
+            <path d="M60 66 Q68 60 76 66" fill="none" stroke="#3D281D" stroke-width="3" stroke-linecap="round" />
+            <path d="M94 66 Q102 60 110 66" fill="none" stroke="#3D281D" stroke-width="3" stroke-linecap="round" />
+            <path d="M62 68 C58 85, 48 115, 44 145 C48 145, 68 145, 66 115 C66 90, 68 75, 68 68 Z" fill="url(#tearStream1)" />
+            <path d="M108 68 C112 85, 122 115, 126 145 C122 145, 102 145, 104 115 C104 90, 102 75, 102 68 Z" fill="url(#tearStream1)" />
+            <ellipse cx="85" cy="172" rx="65" ry="12" fill="#93C5FD" opacity="0.45" />
+            <circle cx="48" cy="80" r="10" fill="#EF4444" opacity="0.6" />
+            <circle cx="122" cy="80" r="10" fill="#EF4444" opacity="0.6" />
+          </g>
+        </svg>
+      </div>
+      <p style="color: #5A3A42; font-weight: 500; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px; padding: 0 8px;">
+        After all this effort, only a simple yes?! That hurts my little heart... Go back and think properly! 😭
+      </p>
+      <button class="btn-primary" id="btnReconsider" style="padding: 12px 28px; font-size: 1.05rem;">Let me reconsider 🥺</button>
+    </div>
+
+  </div>
+
+  <!-- Grand Acceptance Overlay for 'A million times YES! 💖' -->
+  <div class="celebration-overlay" id="celebrationOverlay">
+    <div style="display: flex; gap: 8px; font-size: 1.8rem; margin-bottom: 6px;">
+      <span>🎉</span><span>💍</span><span>✨</span><span>🥰</span>
+    </div>
+    <div style="font-size: 1.75rem; font-weight: 800; color: #E11D48; margin-bottom: 10px; line-height: 1.3; max-width: 380px;">
+      YAYYY! You just made me the happiest person in the universe! 💍✨🥰
+    </div>
+    <div class="gif-container">
+      <svg viewBox="0 0 260 220" class="gif-img" style="width: 100%; max-width: 220px; height: auto; border-radius: 16px; margin: 0 auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+        <g>
+          <text x="120" y="28" font-size="24" fill="#E11D48">💖</text>
+          <text x="90" y="40" font-size="16" fill="#F43F5E">💕</text>
+          <text x="150" y="40" font-size="16" fill="#F43F5E">💕</text>
+        </g>
+        <g transform="translate(35, 40)">
+          <circle cx="40" cy="35" r="16" fill="#B27854" />
+          <ellipse cx="65" cy="65" rx="38" ry="34" fill="#B27854" />
+          <path d="M50 62 Q56 68 62 62" fill="none" stroke="#3D281D" stroke-width="2.5" stroke-linecap="round" />
+          <ellipse cx="88" cy="68" rx="8" ry="5" fill="#96603F" />
+          <circle cx="48" cy="70" r="9" fill="#FF6584" opacity="0.6" />
+          <circle cx="150" cy="35" r="16" fill="#2E2729" />
+          <ellipse cx="125" cy="65" rx="38" ry="34" fill="#FFFFFF" stroke="#F3E8E9" stroke-width="1.5" />
+          <ellipse cx="115" cy="62" rx="9" ry="12" fill="#2E2729" />
+          <ellipse cx="142" cy="62" rx="9" ry="12" fill="#2E2729" />
+          <path d="M110 62 Q115 67 120 62" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+          <path d="M138 62 Q143 67 148 62" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+          <circle cx="102" cy="72" r="12" fill="#EF4444" opacity="0.75" />
+          <circle cx="148" cy="72" r="12" fill="#EF4444" opacity="0.75" />
+          <path d="M125 72 Q128 76 132 72" fill="none" stroke="#2E2729" stroke-width="2" stroke-linecap="round" />
+          <ellipse cx="65" cy="120" rx="32" ry="28" fill="#B27854" />
+          <ellipse cx="125" cy="120" rx="32" ry="28" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" />
+          <path d="M75 115 Q95 130 115 115" fill="none" stroke="#96603F" stroke-width="12" stroke-linecap="round" />
+        </g>
+      </svg>
+    </div>
+    <div class="date-badge" style="margin-bottom: 12px;">✨ Sealed on our special date: 28.02.2026 ✨</div>
+    <p style="font-size: 1.25rem; color: #881337; font-weight: 700; margin-bottom: 6px;">
+      Forever & Always with you! 🐼❤️🐻
+    </p>
+    <p style="font-size: 0.9rem; color: #5A3A42; font-weight: 500; margin-bottom: 22px; max-width: 320px;">
+      Here's to a lifetime filled with sweet giggles, cozy hugs, and endless love!
+    </p>
+    <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 280px;">
+      <button class="btn-primary" id="btnMoreFireworks" style="padding: 11px 24px; font-size: 0.95rem;">More Fireworks! 🎆</button>
+      <button class="btn-secondary" id="btnReplay" style="padding: 11px 24px; font-size: 0.95rem; background: #FFE4E6; color: #9F1239;">Replay the Surprise 🎁</button>
+    </div>
+  </div>
+
+  <script>
+    let audioPlaying = false;
+    const bgmAudio = document.getElementById('bgmAudio');
+    const musicBtn = document.getElementById('musicBtn');
+
+    let audioCtx = null;
+    let synthTimer = null;
+    const NOTES = [523.25, 659.25, 783.99, 1046.50, 493.88, 587.33, 783.99, 987.77, 440, 523.25, 659.25, 880, 523.25, 659.25, 783.99, 1046.50];
+
+    function startSynth() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      let i = 0;
+      function step() {
+        if (!audioPlaying) return;
+        try {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(NOTES[i % NOTES.length], audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 1.2);
+        } catch(e) {}
+        i++;
+        synthTimer = setTimeout(step, 450);
+      }
+      step();
+    }
+
+    function toggleMusic() {
+      audioPlaying = !audioPlaying;
+      if (audioPlaying) {
+        musicBtn.classList.add('music-spinning');
+        musicBtn.textContent = '🎶';
+        bgmAudio.play().catch(function() {
+          startSynth();
+        });
+      } else {
+        musicBtn.classList.remove('music-spinning');
+        musicBtn.textContent = '🎵';
+        bgmAudio.pause();
+        clearTimeout(synthTimer);
+      }
+    }
+    musicBtn.addEventListener('click', toggleMusic);
+
+    const heartsContainer = document.getElementById('heartsContainer');
+    const heartIcons = ['💖', '💕', '🌸', '✨', '🍓', '🧸'];
+    function createFloatingHeart() {
+      const h = document.createElement('div');
+      h.className = 'heart-particle';
+      h.textContent = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+      h.style.left = Math.random() * 96 + 'vw';
+      h.style.fontSize = (Math.random() * 16 + 14) + 'px';
+      h.style.animationDuration = (Math.random() * 5 + 6) + 's';
+      heartsContainer.appendChild(h);
+      setTimeout(() => h.remove(), 12000);
+    }
+    setInterval(createFloatingHeart, 600);
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(screenId);
+      if (target) target.classList.add('active');
+    }
+
+    // Runaway NO Button logic with attempt counter and mobile+desktop support
+    let noAttempts = 0;
+    const maxAttempts = 5;
+    const btnNo1 = document.getElementById('btnNo1');
+    const btnYes1 = document.getElementById('btnYes1');
+
+    function resetNoButton() {
+      noAttempts = 0;
+      btnNo1.style.position = '';
+      btnNo1.style.left = '';
+      btnNo1.style.top = '';
+      btnNo1.style.zIndex = '';
+      btnNo1.style.transform = '';
+      btnNo1.style.transition = '';
+      btnYes1.style.transform = 'scale(1)';
+    }
+
+    function moveNoButton(e) {
+      if (noAttempts < maxAttempts) {
+        if (e && e.cancelable) e.preventDefault();
+        noAttempts++;
+
+        // Make YES button grow slightly bigger with each attempt
+        const yesScale = 1 + noAttempts * 0.08;
+        btnYes1.style.transform = `scale(${yesScale})`;
+        btnYes1.style.transition = 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+        const padding = 24;
+        const btnW = btnNo1.offsetWidth || 100;
+        const btnH = btnNo1.offsetHeight || 46;
+
+        const maxW = Math.max(window.innerWidth - btnW - padding, padding);
+        const maxH = Math.max(window.innerHeight - btnH - padding, padding);
+
+        const yesRect = btnYes1.getBoundingClientRect();
+        let targetX = padding;
+        let targetY = padding;
+        let safety = 0;
+
+        while (safety < 30) {
+          targetX = Math.floor(Math.random() * (maxW - padding)) + padding;
+          targetY = Math.floor(Math.random() * (maxH - padding)) + padding;
+
+          // Prevent overlap with YES button
+          const overlapX = targetX < yesRect.right + 45 && targetX + btnW > yesRect.left - 45;
+          const overlapY = targetY < yesRect.bottom + 45 && targetY + btnH > yesRect.top - 45;
+          if (!overlapX || !overlapY) break;
+          safety++;
+        }
+
+        btnNo1.style.position = 'fixed';
+        btnNo1.style.left = targetX + 'px';
+        btnNo1.style.top = targetY + 'px';
+        btnNo1.style.zIndex = '999';
+        btnNo1.style.transition = 'top 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      }
+    }
+
+    // Desktop hover
+    btnNo1.addEventListener('mouseover', (e) => {
+      if (noAttempts < maxAttempts) {
+        moveNoButton(e);
+      }
+    });
+
+    // Mobile touch
+    btnNo1.addEventListener('touchstart', (e) => {
+      if (noAttempts < maxAttempts) {
+        moveNoButton(e);
+      }
+    }, { passive: false });
+
+    // Click handler for both PC & Mobile
+    btnNo1.addEventListener('click', (e) => {
+      if (noAttempts < maxAttempts) {
+        moveNoButton(e);
+      } else {
+        // 5 attempts completed: allow click to fire navigation
+        showScreen('screenOops');
+      }
+    });
+
+    document.getElementById('btnYes1').addEventListener('click', () => {
+      if (!audioPlaying) toggleMusic();
+      showScreen('screen2');
+      if (window.confetti) {
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      }
+    });
+
+    document.getElementById('btnTryAgain').addEventListener('click', () => {
+      resetNoButton();
+      showScreen('screen1');
+    });
+
+    document.getElementById('btnNext2').addEventListener('click', () => {
+      showScreen('screen3');
+    });
+
+    document.getElementById('btnNext3').addEventListener('click', () => {
+      showScreen('screen4');
+    });
+
+    let hugCount = 0;
+    const hugBadge = document.getElementById('hugBadge');
+    document.getElementById('btnSendHug').addEventListener('click', () => {
+      hugCount++;
+      hugBadge.textContent = `Sent ${hugCount} warm hugs 💕`;
+      if (window.confetti) {
+        confetti({
+          particleCount: 25,
+          spread: 45,
+          origin: { y: 0.7 }
+        });
+      }
+    });
+    document.getElementById('btnNext4').addEventListener('click', () => {
+      showScreen('screen5');
+    });
+
+    // Screen 5: Acceptance Logic
+    // Button 1: Simple "YES" -> Playful sad/dramatic screen (NO confetti)
+    document.getElementById('btnProposalYes1').addEventListener('click', () => {
+      showScreen('screenSad');
+    });
+
+    // Screen 5.5: "Let me reconsider 🥺" -> Return smoothly to Step 5
+    document.getElementById('btnReconsider').addEventListener('click', () => {
+      showScreen('screen5');
+    });
+
+    // Button 2: "A million times YES! 💖" -> Grand Finale!
+    function fireHeartConfetti() {
+      if (!window.confetti) return;
+      const count = 200;
+      const defaults = { origin: { y: 0.7 } };
+
+      function fire(particleRatio, opts) {
+        confetti(Object.assign({}, defaults, opts, {
+          particleCount: Math.floor(count * particleRatio)
+        }));
+      }
+
+      fire(0.25, { spread: 26, startVelocity: 55 });
+      fire(0.2, { spread: 60 });
+      fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+      fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+      fire(0.1, { spread: 120, startVelocity: 45 });
+
+      const end = Date.now() + 3000;
+      const interval = setInterval(function() {
+        if (Date.now() > end) return clearInterval(interval);
+        confetti({
+          startVelocity: 30,
+          spread: 360,
+          ticks: 60,
+          origin: { x: Math.random(), y: Math.random() - 0.2 }
+        });
+      }, 250);
+    }
+
+    document.getElementById('btnProposalYes2').addEventListener('click', () => {
+      fireHeartConfetti();
+      document.getElementById('celebrationOverlay').classList.add('active');
+    });
+
+    document.getElementById('btnMoreFireworks').addEventListener('click', () => {
+      fireHeartConfetti();
+    });
+
+    document.getElementById('btnReplay').addEventListener('click', () => {
+      document.getElementById('celebrationOverlay').classList.remove('active');
+      resetNoButton();
+      showScreen('screen1');
+    });
+  </script>
+</body>
+</html>
