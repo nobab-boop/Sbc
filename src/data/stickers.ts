@@ -114,21 +114,13 @@ export function removeStickerBase64(filename: string) {
   window.dispatchEvent(new CustomEvent('bubu-stickers-updated', { detail: { filename } }));
 }
 
-const DEFAULT_STICKER_SVGS: Record<string, string> = {
-  'IMG_4668.jpeg': "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' rx='40' fill='%23FFF1F2'/><circle cx='100' cy='90' r='50' fill='%23FDA4AF' opacity='0.4'/><text x='100' y='105' font-size='64' text-anchor='middle'>🐼</text><text x='100' y='165' font-size='14' font-family='sans-serif' font-weight='bold' fill='%23E11D48' text-anchor='middle'>Bubu & Dudu 💕</text></svg>",
-  'IMG_4669.jpeg': "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' rx='40' fill='%23FFF1F2'/><circle cx='100' cy='90' r='50' fill='%23FCA5A5' opacity='0.4'/><text x='100' y='105' font-size='64' text-anchor='middle'>🥺</text><text x='100' y='165' font-size='14' font-family='sans-serif' font-weight='bold' fill='%23E11D48' text-anchor='middle'>Please say yes! 💔</text></svg>",
-  'IMG_4670.jpeg': "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' rx='40' fill='%23FEF3C7'/><circle cx='100' cy='90' r='50' fill='%23FDE68A' opacity='0.5'/><text x='100' y='105' font-size='64' text-anchor='middle'>🎂</text><text x='100' y='165' font-size='14' font-family='sans-serif' font-weight='bold' fill='%23B45309' text-anchor='middle'>Happy Birthday 🎉</text></svg>",
-  'IMG_4671.jpeg': "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' rx='40' fill='%23FCE7F3'/><circle cx='100' cy='90' r='50' fill='%23FBCFE8' opacity='0.5'/><text x='100' y='105' font-size='64' text-anchor='middle'>🤗</text><text x='100' y='165' font-size='14' font-family='sans-serif' font-weight='bold' fill='%23BE185D' text-anchor='middle'>Warm Hugs 💖</text></svg>",
-  'image.jpeg': "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><defs><linearGradient id='bgGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23FFF1F2'/><stop offset='100%' stop-color='%23FFE4E6'/></linearGradient></defs><rect width='320' height='240' fill='url(%23bgGrad)'/><circle cx='160' cy='100' r='55' fill='%23FDA4AF' opacity='0.3'/><text x='160' y='105' font-size='50' text-anchor='middle'>🌸</text><text x='160' y='165' font-size='16' font-family='sans-serif' font-weight='bold' fill='%23E11D48' text-anchor='middle'>The Love of My Life 💕</text><text x='160' y='190' font-size='12' font-family='sans-serif' fill='%23BE123C' text-anchor='middle' opacity='0.8'>Our Precious Memory</text></svg>"
-};
-
-// Get the best URL for a filename: Base64 first, then built-in SVG fallback
+// Get the best URL for a filename: Base64 first, then /stickers/<filename>, then /<filename>
 export function getStickerSource(filename: string): string | null {
   loadStickersFromStorage();
   if (stickerCache[filename]) {
     return stickerCache[filename];
   }
-  return DEFAULT_STICKER_SVGS[filename] || null;
+  return null;
 }
 
 // Convert a File object to an optimized base64 Data URL
