@@ -5,11 +5,12 @@ import { playPopSound, playPoutSound } from '../utils/audio';
 import BubuDuduImage from './BubuDuduImage';
 
 interface Screen1InitialProps {
+  recipientName?: string;
   onYes: () => void;
   onNo: () => void;
 }
 
-export default function Screen1Initial({ onYes, onNo }: Screen1InitialProps) {
+export default function Screen1Initial({ recipientName, onYes, onNo }: Screen1InitialProps) {
   const [noAttempts, setNoAttempts] = useState(0);
   const maxAttempts = 5;
   const [fixedPos, setFixedPos] = useState<{ top: number; left: number } | null>(null);
@@ -82,7 +83,7 @@ export default function Screen1Initial({ onYes, onNo }: Screen1InitialProps) {
       {/* Cute speech bubble header */}
       <div className="relative mb-5 inline-block">
         <h1 className="text-2xl sm:text-3xl font-black text-[#d6336c] font-fredoka leading-snug tracking-wide [text-shadow:2px_2px_0px_rgba(255,182,193,0.6)] px-3">
-          I made something special for u,<br className="hidden sm:inline" /> do u wanna see it? 🥺💖
+          I made something special for u{recipientName ? `, ${recipientName}` : ''}! 🥺💖<br className="hidden sm:inline" /> do u wanna see it?
         </h1>
         <div className="absolute -top-3 -right-2 text-rose-400 animate-wiggle text-xl">
           ✨

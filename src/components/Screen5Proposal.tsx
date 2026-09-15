@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, type ChangeEvent, type DragEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Heart, Calendar, Sparkles, RotateCcw, ArrowLeft, Camera } from 'lucide-react';
+import { Heart, Calendar, Sparkles, ArrowLeft, RotateCcw } from 'lucide-react';
 import { GIF_URLS } from '../data/defaults';
 import { triggerFireworks, triggerBirthdayConfetti } from '../utils/confetti';
 import { playCelebrationSound, playPopSound, playPoutSound } from '../utils/audio';
-import { getStickerSource, saveStickerBase64, convertFileToBase64 } from '../data/stickers';
+import { getStickerSource } from '../data/stickers';
 import BubuDuduImage from './BubuDuduImage';
 
 interface Screen5ProposalProps {
@@ -26,20 +26,23 @@ export default function Screen5Proposal({
   onRestart,
 }: Screen5ProposalProps) {
   const [modalState, setModalState] = useState<'none' | 'sad' | 'grandFinale'>('none');
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
 
-  // Base64-first photo resolution for image.jpeg
+  // Base64-first photo resolution for the keepsake photo
   const [photoSrc, setPhotoSrc] = useState<string>(() => {
-    const base64 = getStickerSource('image.jpeg');
+    const base64 =
+      getStickerSource('image.jpeg') ||
+      (typeof window !== 'undefined' ? localStorage.getItem('bubu_sticker_base64_image.jpeg') : null) ||
+      (typeof window !== 'undefined' ? localStorage.getItem('bubu_sticker_base64_photo1') : null);
     if (base64) return base64;
     return '/stickers/image.jpeg';
   });
 
   useEffect(() => {
     const handleUpdate = () => {
-      const base64 = getStickerSource('image.jpeg');
+      const base64 =
+        getStickerSource('image.jpeg') ||
+        localStorage.getItem('bubu_sticker_base64_image.jpeg') ||
+        localStorage.getItem('bubu_sticker_base64_photo1');
       if (base64) {
         setPhotoSrc(base64);
       }
@@ -48,8 +51,11 @@ export default function Screen5Proposal({
     window.addEventListener('bubu-stickers-updated', handleUpdate);
     window.addEventListener('storage', handleUpdate);
 
-    // Initial check
-    const current = getStickerSource('image.jpeg');
+    // Initial check across storage and assets
+    const current =
+      getStickerSource('image.jpeg') ||
+      localStorage.getItem('bubu_sticker_base64_image.jpeg') ||
+      localStorage.getItem('bubu_sticker_base64_photo1');
     if (current) {
       setPhotoSrc(current);
     } else {
@@ -71,33 +77,6 @@ export default function Screen5Proposal({
       window.removeEventListener('storage', handleUpdate);
     };
   }, [photos?.photo1]);
-
-  const handleFileUpload = async (file: File) => {
-    try {
-      const base64 = await convertFileToBase64(file);
-      saveStickerBase64('image.jpeg', base64);
-      setPhotoSrc(base64);
-      playPopSound();
-    } catch (err) {
-      console.error('Failed to convert photo to base64', err);
-    }
-  };
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      handleFileUpload(files[0]);
-    }
-  };
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      handleFileUpload(files[0]);
-    }
-  };
 
   // Button 1: Simple "YES" triggers dramatic crying / pouting screen (NO confetti)
   const handleSimpleYes = () => {
@@ -139,30 +118,8 @@ export default function Screen5Proposal({
         </h1>
       </div>
 
-      {/* Single Romantic Polaroid Keepsake Photo Frame (Base64 System) */}
-      <div
-        className={`relative my-3 p-3 sm:p-3.5 bg-white/95 border-[3px] border-dashed ${
-          isDragging ? 'border-rose-500 bg-rose-50/70 scale-102' : 'border-rose-300/80'
-        } rounded-3xl shadow-[0_10px_25px_rgba(255,154,162,0.25)] max-w-xs sm:max-w-sm w-full transition-all duration-300 group cursor-pointer`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onClick={() => fileInputRef.current?.click()}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragging(true);
-        }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={handleDrop}
-      >
-        {/* Hidden File Input for 1-Click Upload */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleFileChange}
-        />
-
+      {/* Single Romantic Polaroid Keepsake Photo Frame (Permanent & Locked) */}
+      <div className="relative my-3 p-3 sm:p-3.5 bg-white/95 border-[3px] border-dashed border-rose-300/80 rounded-3xl shadow-[0_10px_25px_rgba(255,154,162,0.25)] max-w-xs sm:max-w-sm w-full transition-all duration-300">
         {/* Washi Tape Header on Top */}
         <div className="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 min-w-[190px] px-4 h-6 flex items-center justify-center text-[11px] font-bold text-rose-800/90 font-fredoka tracking-wider uppercase shadow-xs whitespace-nowrap z-20">
           ♡ WITH YOU FOREVER ♡
@@ -173,30 +130,18 @@ export default function Screen5Proposal({
           💖
         </div>
 
-        {/* The One Keepsake Photo */}
+        {/* The One Keepsake Photo (Locked & Protected) */}
         <div className="relative aspect-4/3 w-full rounded-2xl overflow-hidden bg-rose-50/60 border border-rose-200/70 shadow-inner">
           <img
             src={photoSrc}
             alt="My Love Portrait"
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover select-none pointer-events-none"
             onError={(e) => {
               (e.target as HTMLImageElement).src =
-                "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><defs><linearGradient id='bgGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23FFF1F2'/><stop offset='100%' stop-color='%23FFE4E6'/></linearGradient></defs><rect width='320' height='240' fill='url(%23bgGrad)'/><circle cx='160' cy='100' r='55' fill='%23FDA4AF' opacity='0.3'/><text x='160' y='105' font-size='50' text-anchor='middle'>🌸</text><text x='160' y='165' font-size='16' font-family='sans-serif' font-weight='bold' fill='%23E11D48' text-anchor='middle'>The Love of My Life 💕</text><text x='160' y='190' font-size='12' font-family='sans-serif' fill='%23BE123C' text-anchor='middle' opacity='0.8'>Tap to upload your photo</text></svg>";
+                "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'><defs><linearGradient id='bgGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23FFF1F2'/><stop offset='100%' stop-color='%23FFE4E6'/></linearGradient></defs><rect width='320' height='240' fill='url(%23bgGrad)'/><circle cx='160' cy='100' r='55' fill='%23FDA4AF' opacity='0.3'/><text x='160' y='105' font-size='50' text-anchor='middle'>🌸</text><text x='160' y='165' font-size='16' font-family='sans-serif' font-weight='bold' fill='%23E11D48' text-anchor='middle'>The Love of My Life 💕</text><text x='160' y='190' font-size='12' font-family='sans-serif' fill='%23BE123C' text-anchor='middle' opacity='0.8'>Our Precious Memory</text></svg>";
             }}
           />
-
-          {/* Hover Overlay with Upload Cue */}
-          <div
-            className={`absolute inset-0 bg-rose-950/35 backdrop-blur-[1px] flex flex-col items-center justify-center text-white gap-1 transition-opacity duration-200 ${
-              isHovered || isDragging ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <Camera className="w-6 h-6 text-white drop-shadow-md animate-bounce" />
-            <span className="text-xs font-bold font-fredoka uppercase tracking-wide drop-shadow-md">
-              Tap or Drop to Change Photo 📷
-            </span>
-          </div>
         </div>
 
         {/* Cute Scrapbook Caption */}
@@ -346,7 +291,7 @@ export default function Screen5Proposal({
                   ✨ Sealed on our special date: {specialDate} ✨
                 </div>
                 <p className="text-xl font-bold text-rose-800 font-fredoka">
-                  Forever & Always with you! 🐼❤️🐻
+                  Forever & Always with you, my Prottushona! ❤️ - Your Nafimshona
                 </p>
                 <p className="text-xs sm:text-sm text-[#6b4f4f] font-quicksand font-semibold">
                   Here's to a lifetime filled with sweet giggles, cozy hugs, and endless love!

@@ -7,12 +7,12 @@ import BubuDuduImage from './BubuDuduImage';
 
 // =========================================================================
 // 🔒 SECRET PASSWORD CONFIGURATION
-// Change the secret password below (e.g. DDMM format like "2802", birthday, anniversary)
+// Default secret key (05 06 26 / 0506)
 // =========================================================================
-export const SECRET_KEY = "2802";
+export const SECRET_KEY = "0506";
 
 // Editable hint displayed to the user
-export const DEFAULT_HINT = "Hint: The day our beautiful story began 💍 (DDMM format)";
+export const DEFAULT_HINT = "Hint: The day our beautiful story began 💍";
 
 interface Screen3LetterProps {
   title: string;
@@ -30,7 +30,7 @@ interface Screen3LetterProps {
     photo4: string;
   };
   onNext: () => void;
-  onOpenCustomize: () => void;
+  onOpenCustomize?: () => void;
 }
 
 export default function Screen3Letter({
@@ -44,7 +44,6 @@ export default function Screen3Letter({
   hintText = DEFAULT_HINT,
   photos,
   onNext,
-  onOpenCustomize,
 }: Screen3LetterProps) {
   const [passwordInput, setPasswordInput] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -53,10 +52,18 @@ export default function Screen3Letter({
   const [isBlooming, setIsBlooming] = useState(false);
 
   const handleUnlock = () => {
-    const trimmedInput = passwordInput.trim().toLowerCase();
-    const targetKey = (secretKey || SECRET_KEY).trim().toLowerCase();
+    const rawInput = passwordInput.trim().toLowerCase();
+    const cleanInput = rawInput.replace(/[\s\/\-\.]/g, '');
+    const cleanTarget = (secretKey || SECRET_KEY).trim().toLowerCase().replace(/[\s\/\-\.]/g, '');
 
-    if (trimmedInput === targetKey) {
+    const isMatch =
+      cleanInput === cleanTarget ||
+      cleanInput === '0506' ||
+      cleanInput === '050626' ||
+      cleanInput === '05062026' ||
+      rawInput === (secretKey || SECRET_KEY).trim().toLowerCase();
+
+    if (isMatch) {
       // Correct password!
       playPopSound();
       setErrorMessage('');
@@ -75,7 +82,7 @@ export default function Screen3Letter({
     } else {
       // Incorrect password: shake and tease
       setIsShaking(true);
-      setErrorMessage("Hehe wrong answer! Think harder, my cutie! 🙈");
+      setErrorMessage("Hehe wrong answer! Think harder, my Prottushona! 🙈");
       setPasswordInput('');
       setTimeout(() => {
         setIsShaking(false);

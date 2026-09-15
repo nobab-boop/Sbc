@@ -1,19 +1,19 @@
 import { AppCustomization } from '../types';
 
 export const DEFAULT_CUSTOMIZATION: AppCustomization = {
-  recipientName: "Cutie Pie",
-  specialDate: "28.02.2026",
+  recipientName: "Prottushona",
+  specialDate: "05 06 26",
   birthdayWish: "I am ur gift 🎁",
   letterTitle: "MY WISH FOR U",
-  letterGreeting: "Dearest Love,",
+  letterGreeting: "Dearest Prottushona,",
   letterParagraph1: "Happy Birthday to the sweetest, most wonderful human in the entire universe! Every single day with you feels like sunshine after rain. Thank you for filling my life with your gentle giggles, endless warmth, and all our silly little memories.",
   letterParagraph2: "My deepest wish for you today is a year overflowing with peace, immense joy, and dreams coming true. No matter what tomorrow holds, know that I'm always right here cheering for you, admiring you, and loving you more than words could ever say.",
   letterClosing: "Forever and always yours,",
-  letterSignature: "Ur Panda 🐼❤️",
-  letterSecretKey: "2802",
-  letterHint: "Hint: The day our beautiful story began 💍 (DDMM format)",
-  missYouText: "I MISS YOU ❤️",
-  proposalQuestion: "Will you be mine? 💖",
+  letterSignature: "Your Nafimshona ❤️",
+  letterSecretKey: "0506",
+  letterHint: "Hint: The day our beautiful story began 💍",
+  missYouText: "I MISS YOU, PROTTUSHONA ❤️",
+  proposalQuestion: "Will you be mine, Prottushona? 💖",
   customMusicUrl: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=sweet-love-112199.mp3",
   photos: {
     photo1: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'><rect width='160' height='160' fill='%23FFE4E6'/><circle cx='80' cy='65' r='36' fill='%23FDA4AF' opacity='0.6'/><text x='80' y='74' font-size='34' text-anchor='middle'>🌸</text><rect x='20' y='115' width='120' height='26' rx='13' fill='%23FFF1F2'/><text x='80' y='132' font-size='12' font-weight='bold' fill='%23BE123C' text-anchor='middle'>First Date 💕</text></svg>",

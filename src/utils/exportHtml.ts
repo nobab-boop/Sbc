@@ -487,7 +487,7 @@ export function generateStandaloneHtml(config: AppCustomization): string {
 
     <!-- Screen 1: Initial Question -->
     <div class="screen active" id="screen1">
-      <div class="lead-text">I made something special for u, do u wanna see it? 💖</div>
+      <div class="lead-text">I made something special for u, ${config.recipientName}! 🥺💖<br>do u wanna see it?</div>
       <div class="gif-container">
         ${renderStickerHtml('IMG_4668.jpeg', 'First Page Sticker', 'First Page (668)')}
       </div>
@@ -509,6 +509,9 @@ export function generateStandaloneHtml(config: AppCustomization): string {
 
     <!-- Screen 2: Birthday Celebration -->
     <div class="screen" id="screen2">
+      <div style="display: inline-block; padding: 3px 12px; background: rgba(255, 228, 230, 0.9); border-radius: 999px; font-size: 11px; font-weight: 700; color: #be123c; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-family: 'Quicksand', sans-serif;">
+        ✨ Special Day for ${config.recipientName} ✨
+      </div>
       <h1 style="font-size: 1.85rem;">HAPPY BIRTHDAY 🎉🎂</h1>
       <div class="gif-container">
         ${renderStickerHtml('IMG_4670.jpeg', 'Happy Birthday Sticker', 'Happy Birthday Page (4670)')}
@@ -538,7 +541,7 @@ export function generateStandaloneHtml(config: AppCustomization): string {
         <div class="lock-icon-badge">🔒</div>
         <h2 class="lock-title">Psst... This letter is password protected! 🔒💌</h2>
         <div class="hint-pill-box">
-          ${config.letterHint || 'Hint: The day our beautiful story began 💍 (DDMM format)'}
+          ${config.letterHint || 'Hint: The day our beautiful story began 💍'}
         </div>
         <div class="password-input-wrap">
           <input
@@ -609,7 +612,7 @@ export function generateStandaloneHtml(config: AppCustomization): string {
 
     <!-- Screen 4: Virtual Hug / I Miss You -->
     <div class="screen" id="screen4">
-      <h1 style="font-size: 1.7rem;">Virtual hug for ya! 🤗</h1>
+      <h1 style="font-size: 1.7rem;">Virtual hug for ya, ${config.recipientName}! 🤗</h1>
       <div class="gif-container">
         ${renderStickerHtml('IMG_4671.jpeg', 'Virtual Hug Sticker', 'Hug Page (4671)')}
       </div>
@@ -676,7 +679,7 @@ export function generateStandaloneHtml(config: AppCustomization): string {
     </div>
     <div class="date-badge" style="margin-bottom: 12px;">✨ Sealed on our special date: ${config.specialDate} ✨</div>
     <p style="font-size: 1.25rem; color: #881337; font-weight: 700; margin-bottom: 6px;">
-      Forever & Always with you! 🐼❤️🐻
+      Forever & Always with you, my ${config.recipientName}! ❤️ - Your Nafimshona
     </p>
     <p style="font-size: 0.9rem; color: #5A3A42; font-weight: 500; margin-bottom: 22px; max-width: 320px;">
       Here's to a lifetime filled with sweet giggles, cozy hugs, and endless love!
@@ -870,8 +873,8 @@ export function generateStandaloneHtml(config: AppCustomization): string {
     // =========================================================================
     // 🔒 Screen 3: Secret Password Lock & Radial Flower Blooming Animation
     // =========================================================================
-    // Change the secret password below (e.g. DDMM format like "2802", anniversary, or birthday)
-    const SECRET_KEY = "${config.letterSecretKey || '2802'}";
+    // Default secret password (05 06 26 / 0506)
+    const SECRET_KEY = "${config.letterSecretKey || '0506'}";
 
     const passwordInput = document.getElementById('passwordInput');
     const passwordError = document.getElementById('passwordError');
@@ -1029,10 +1032,18 @@ export function generateStandaloneHtml(config: AppCustomization): string {
     }
 
     function handlePasswordUnlock() {
-      const inputVal = (passwordInput.value || '').trim().toLowerCase();
-      const targetVal = SECRET_KEY.trim().toLowerCase();
+      const rawInput = (passwordInput.value || '').trim().toLowerCase();
+      const cleanInput = rawInput.replace(/[\s\/\-\.]/g, '');
+      const cleanTarget = SECRET_KEY.trim().toLowerCase().replace(/[\s\/\-\.]/g, '');
 
-      if (inputVal === targetVal) {
+      const isMatch =
+        cleanInput === cleanTarget ||
+        cleanInput === '0506' ||
+        cleanInput === '050626' ||
+        cleanInput === '05062026' ||
+        rawInput === SECRET_KEY.trim().toLowerCase();
+
+      if (isMatch) {
         // Correct password!
         passwordError.textContent = '';
         letterLockedBox.style.display = 'none';
@@ -1049,7 +1060,7 @@ export function generateStandaloneHtml(config: AppCustomization): string {
       } else {
         // Incorrect password!
         passwordInput.classList.add('animate-shake');
-        passwordError.textContent = "Hehe wrong answer! Think harder, my cutie! 🙈";
+        passwordError.textContent = "Hehe wrong answer! Think harder, my ${config.recipientName}! 🙈";
         passwordInput.value = '';
         setTimeout(() => {
           passwordInput.classList.remove('animate-shake');

@@ -59,7 +59,8 @@ export default function BubuDuduImage({
   stickerRole,
   alt,
   className = '',
-  showUploadTrigger = true,
+  gifUrl,
+  showUploadTrigger = false,
 }: BubuDuduImageProps) {
   const role = stickerRole || getRoleFromType(type);
   const targetFilename = SCREEN_TO_ASSET_MAP[role];
@@ -153,15 +154,23 @@ export default function BubuDuduImage({
   };
 
   // If the image is loaded and valid, render the user's exact sticker image
-  if (imgSrc && !loadError) {
+  const displaySrc = (imgSrc && !loadError) ? imgSrc : gifUrl;
+
+  if (displaySrc) {
     return (
       <div className={`relative flex items-center justify-center ${className}`}>
         <img
-          src={imgSrc}
+          src={displaySrc}
           alt={alt || assetInfo.title}
           referrerPolicy="no-referrer"
-          onError={() => setLoadError(true)}
-          className="w-full h-full object-contain drop-shadow-sm select-none transition-transform duration-300"
+          onError={() => {
+            if (displaySrc === imgSrc && gifUrl) {
+              setImgSrc(null);
+            } else {
+              setLoadError(true);
+            }
+          }}
+          className="w-full h-full object-contain drop-shadow-sm select-none transition-transform duration-300 pointer-events-none"
           style={{ imageRendering: 'auto' }}
         />
       </div>
@@ -169,9 +178,13 @@ export default function BubuDuduImage({
   }
 
   // If image is missing: DO NOT substitute random AI cartoons.
-  // If showUploadTrigger is false (e.g. tiny decorative corner badge), return null to avoid cluttering layout
+  // If showUploadTrigger is false (default), return null or cute heart
   if (!showUploadTrigger) {
-    return null;
+    return (
+      <div className={`relative flex items-center justify-center text-rose-400 text-4xl select-none pointer-events-none ${className}`}>
+        💖
+      </div>
+    );
   }
 
   // Clearly identify which asset is missing and provide a direct 1-click upload / drag-and-drop to Base64!

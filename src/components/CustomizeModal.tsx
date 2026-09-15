@@ -377,13 +377,13 @@ export default function CustomizeModal({
                 </label>
                 <div>
                   <label className="block text-[11px] font-semibold text-rose-700 mb-0.5">
-                    Secret Key Password (default: 2802)
+                    Secret Key Password (default: 0506 / 05 06 26)
                   </label>
                   <input
                     type="text"
-                    value={formData.letterSecretKey || '2802'}
+                    value={formData.letterSecretKey || '0506'}
                     onChange={(e) => handleChange('letterSecretKey', e.target.value)}
-                    placeholder="e.g. 2802"
+                    placeholder="e.g. 0506"
                     className="w-full px-3 py-1.5 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 text-xs font-bold text-rose-900"
                   />
                 </div>
@@ -393,7 +393,7 @@ export default function CustomizeModal({
                   </label>
                   <input
                     type="text"
-                    value={formData.letterHint || 'Hint: The day our beautiful story began 💍 (DDMM format)'}
+                    value={formData.letterHint || 'Hint: The day our beautiful story began 💍'}
                     onChange={(e) => handleChange('letterHint', e.target.value)}
                     placeholder="Hint text..."
                     className="w-full px-3 py-1.5 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 text-xs"

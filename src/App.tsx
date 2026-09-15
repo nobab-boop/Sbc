@@ -1,61 +1,63 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Download, Sliders, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { AppScreen, AppCustomization } from './types';
 import { DEFAULT_CUSTOMIZATION } from './data/defaults';
 import FloatingHearts from './components/FloatingHearts';
 import MusicPlayer from './components/MusicPlayer';
-import CustomizeModal from './components/CustomizeModal';
 import Screen1Initial from './components/Screen1Initial';
 import Screen1Oops from './components/Screen1Oops';
 import Screen2Birthday from './components/Screen2Birthday';
 import Screen3Letter from './components/Screen3Letter';
 import Screen4Hug from './components/Screen4Hug';
 import Screen5Proposal from './components/Screen5Proposal';
-import { generateStandaloneHtml } from './utils/exportHtml';
-import { playPopSound } from './utils/audio';
 
-const STORAGE_KEY = 'bubu_dudu_customization_v1';
+const STORAGE_KEY = 'bubu_dudu_customization_v3';
+
+function sanitizeCustomization(data: Partial<AppCustomization>): AppCustomization {
+  const cleanHint = (data.letterHint || DEFAULT_CUSTOMIZATION.letterHint)
+    .replace(/\s*\([^)]*\)/g, '')
+    .trim();
+
+  return {
+    ...DEFAULT_CUSTOMIZATION,
+    ...data,
+    recipientName: (data.recipientName && data.recipientName !== 'Cutie Pie') ? data.recipientName : 'Prottushona',
+    specialDate: (data.specialDate && data.specialDate !== '28.02.2026') ? data.specialDate : '05 06 26',
+    letterSignature: (data.letterSignature && data.letterSignature !== 'Ur Panda 🐼❤️') ? data.letterSignature : 'Your Nafimshona ❤️',
+    proposalQuestion: (data.proposalQuestion && data.proposalQuestion !== 'Will you be mine? 💖') ? data.proposalQuestion : 'Will you be mine, Prottushona? 💖',
+    letterGreeting: (data.letterGreeting && data.letterGreeting !== 'Dearest Love,') ? data.letterGreeting : 'Dearest Prottushona,',
+    letterSecretKey: (data.letterSecretKey && data.letterSecretKey !== '2802') ? data.letterSecretKey : '0506',
+    letterHint: cleanHint || 'Hint: The day our beautiful story began 💍',
+    missYouText: (data.missYouText && data.missYouText !== 'I MISS YOU ❤️') ? data.missYouText : 'I MISS YOU, PROTTUSHONA ❤️',
+  };
+}
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('initial');
-  const [customization, setCustomization] = useState<AppCustomization>(() => {
+  const [customization] = useState<AppCustomization>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      const savedV3 = localStorage.getItem(STORAGE_KEY);
+      if (savedV3) return sanitizeCustomization(JSON.parse(savedV3));
+
+      const savedV2 = localStorage.getItem('bubu_dudu_customization_v2');
+      if (savedV2) {
+        const sanitized = sanitizeCustomization(JSON.parse(savedV2));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
+        return sanitized;
+      }
+
+      const savedV1 = localStorage.getItem('bubu_dudu_customization_v1');
+      if (savedV1) {
+        const sanitized = sanitizeCustomization(JSON.parse(savedV1));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
+        return sanitized;
+      }
     } catch {
       // Fallback
     }
     return DEFAULT_CUSTOMIZATION;
   });
-
-  const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
-  const [customizeTab, setCustomizeTab] = useState<'text' | 'stickers' | 'photos' | 'export'>('text');
-
-  // Save changes to localStorage
-  const handleUpdateCustomization = (updated: AppCustomization) => {
-    setCustomization(updated);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    } catch {
-      // Ignore
-    }
-  };
-
-  // Quick download standalone HTML
-  const handleQuickDownload = () => {
-    playPopSound();
-    const html = generateStandaloneHtml(customization);
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `bubu-dudu-birthday-${customization.recipientName.toLowerCase().replace(/\s+/g, '-')}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
 
   // Step tracker mapping for progress bar
   const stepMap: Record<AppScreen, number> = {
@@ -72,46 +74,8 @@ export default function App() {
       {/* Background Floating Hearts Particle System */}
       <FloatingHearts />
 
-      {/* Top Navigation & Controls Bar */}
-      <header className="fixed top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 z-40 flex items-center justify-between pointer-events-none">
-        {/* Left: Quick Actions */}
-        <div className="flex items-center gap-2 pointer-events-auto">
-          <button
-            onClick={() => {
-              playPopSound();
-              setCustomizeTab('stickers');
-              setIsCustomizeOpen(true);
-            }}
-            className="btn-kawaii flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-white/95 hover:bg-rose-50 border border-rose-300 text-rose-600 rounded-full shadow-xs text-xs font-bold font-fredoka uppercase tracking-wider transition-all hover:scale-105 cursor-pointer"
-            title="Manage Bubu & Dudu Sticker Assets (IMG_4668, 4669, 4670, 4671)"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>Stickers</span>
-          </button>
-
-          <button
-            onClick={() => {
-              playPopSound();
-              setCustomizeTab('text');
-              setIsCustomizeOpen(true);
-            }}
-            className="btn-kawaii flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-white/90 hover:bg-rose-50 border border-rose-200 text-rose-600 rounded-full shadow-xs text-xs font-bold font-fredoka uppercase tracking-wider transition-all hover:scale-105 cursor-pointer"
-            title="Customize names, letter, photos & audio"
-          >
-            <Sliders className="w-3.5 h-3.5 text-rose-500" />
-            <span className="hidden sm:inline">Customize</span>
-          </button>
-
-          <button
-            onClick={handleQuickDownload}
-            className="btn-kawaii flex items-center gap-1 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-white/90 hover:bg-rose-50 border border-rose-200 text-rose-600 rounded-full shadow-xs text-xs font-bold font-fredoka uppercase tracking-wider transition-all hover:scale-105 cursor-pointer"
-            title="Download complete standalone index.html file"
-          >
-            <Download className="w-3.5 h-3.5 text-rose-500" />
-            <span className="hidden sm:inline">Save index.html</span>
-          </button>
-        </div>
-
+      {/* Top Controls Bar - Music Player only */}
+      <header className="fixed top-3 sm:top-4 right-3 sm:right-4 z-40 flex items-center justify-end pointer-events-none">
         {/* Right: Music Player */}
         <div className="pointer-events-auto">
           <MusicPlayer customMusicUrl={customization.customMusicUrl} />
@@ -158,6 +122,7 @@ export default function App() {
             >
               {currentScreen === 'initial' && (
                 <Screen1Initial
+                  recipientName={customization.recipientName}
                   onYes={() => setCurrentScreen('birthday')}
                   onNo={() => setCurrentScreen('oops')}
                 />
@@ -189,7 +154,6 @@ export default function App() {
                   hintText={customization.letterHint}
                   photos={customization.photos}
                   onNext={() => setCurrentScreen('hug')}
-                  onOpenCustomize={() => setIsCustomizeOpen(true)}
                 />
               )}
 
@@ -212,15 +176,6 @@ export default function App() {
           </AnimatePresence>
         </div>
       </main>
-
-      {/* Customization Drawer / Export Modal */}
-      <CustomizeModal
-        isOpen={isCustomizeOpen}
-        onClose={() => setIsCustomizeOpen(false)}
-        customization={customization}
-        onUpdate={handleUpdateCustomization}
-        initialTab={customizeTab}
-      />
     </div>
   );
 }
